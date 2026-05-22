@@ -50,4 +50,57 @@
  */
 export function createDabbawala(name, area) {
   // Your code here
+
+  let deliveries = [];
+  let nextid = 0;
+
+  return {
+    addDelivery(from, to) {
+      if (!from || !to) return -1;
+
+      let delivery = {
+        id: ++nextid,
+        from,
+        to,
+        status: "pending",
+      };
+
+      deliveries.push(delivery);
+      return delivery.id;
+    },
+
+    completeDelivery(id) {
+      const delivery = deliveries.find((d) => d.id === id);
+
+      if (!delivery || delivery.status === "completed") {
+        return false;
+      }
+
+      delivery.status = "completed";
+      return true;
+    },
+
+    getActiveDeliveries() {
+      return (deliveries = deliveries
+        .filter((delivery) => delivery.status === "pending")
+        .map((d) => ({ ...d })));
+    },
+
+    getStats() {
+      let total = deliveries.length;
+      let completed = deliveries.filter((d) => d.status === "completed").length;
+      let pending = total - completed;
+
+      let successRate =
+        total === 0 ? "0.00%" : ((completed / total) * 100).toFixed(2) + "%";
+
+      return { name, area, total, completed, pending, successRate };
+    },
+
+    reset() {
+      deliveries = [];
+      nextid = 0;
+      return true;
+    },
+  };
 }

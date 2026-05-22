@@ -55,20 +55,110 @@
  */
 export function mixColors(color1, color2) {
   // Your code here
+
+  if (
+    !color1 ||
+    !color2 ||
+    typeof color1.r !== "number" ||
+    typeof color1.g !== "number" ||
+    typeof color1.b !== "number" ||
+    typeof color2.r !== "number" ||
+    typeof color2.g !== "number" ||
+    typeof color2.b !== "number"
+  ) {
+    return null;
+  }
+
+  return {
+    name: `${color1.name}-${color2.name}`,
+    r: Math.round((color1.r + color2.r) / 2),
+    g: Math.round((color1.g + color2.g) / 2),
+    b: Math.round((color1.b + color2.b) / 2),
+  };
 }
 
 export function adjustBrightness(color, factor) {
   // Your code here
+  if (
+    !color ||
+    typeof color.r !== "number" ||
+    typeof color.g !== "number" ||
+    typeof color.b !== "number" ||
+    typeof factor !== "number"
+  ) {
+    return null;
+  }
+
+  let r = color.r;
+  let g = color.g;
+  let b = color.b;
+
+  let colors = [r, g, b];
+
+  let colwithmap = colors.map((color) => {
+    let val = Math.round(color * factor);
+    return val > 255 ? 255 : val < 0 ? 0 : val;
+  });
+
+  return {
+    name: `${color.name}`,
+    r: colwithmap[0],
+    g: colwithmap[1],
+    b: colwithmap[2],
+  };
 }
 
 export function addToPalette(palette, color) {
   // Your code here
+
+  if (!Array.isArray(palette)) return [color];
+  if (
+    !color ||
+    typeof color.r !== "number" ||
+    typeof color.g !== "number" ||
+    typeof color.b !== "number"
+  )
+    return [...palette];
+
+  const paletteDup = [...palette];
+
+  paletteDup.push(color);
+
+  return paletteDup;
 }
 
 export function removeFromPalette(palette, colorName) {
   // Your code here
+
+  if (!Array.isArray(palette)) return [];
+  if (!colorName) return [...palette];
+  const paletteDup = [...palette];
+
+  const result = paletteDup.filter((color) => color.name !== colorName);
+  return result;
 }
 
 export function mergePalettes(palette1, palette2) {
   // Your code here
+
+  let p1 = Array.isArray(palette1) ? palette1 : [];
+  let p2 = Array.isArray(palette2) ? palette2 : [];
+
+  const mixedPalettes = [...p1, ...p2];
+
+  let seen = new Set();
+  const result = [];
+
+  for (const color of mixedPalettes) {
+    if (!color || typeof color.name !== "string") {
+      continue;
+    }
+
+    if (!seen.has(color.name)) {
+      seen.add(color.name);
+      result.push(color);
+    }
+  }
+
+  return result;
 }
